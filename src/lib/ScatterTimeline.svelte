@@ -156,7 +156,16 @@
                     transform={`translate(${xScale(tick) + xScale.bandwidth()/2}, ${20 + (20 * i)})`}
                 >{lineData[dataCategory][category][`y${tick}`][0].value}</text>                    
                 {:else}
-                {console.log(lineData[dataCategory])}
+                {#if lineData[dataCategory][category][statusLegendEntry[category]]}
+                    {#if lineData[dataCategory][category][statusLegendEntry[category]][`y${tick}`] &&
+                        lineData[dataCategory][category][statusLegendEntry[category]][`y${tick}`].length > 0
+                    }
+                        <text class="font-bold"
+                            fill={colors[i]}
+                            transform={`translate(${xScale(tick) + xScale.bandwidth()/2}, ${20 + (20 * i)})`}
+                        >{lineData[dataCategory][category][statusLegendEntry[category]][`y${tick}`][0].value}</text>                        
+                    {/if}
+                {/if}
                 {/if} 
                 {/each}
                 {/if}
