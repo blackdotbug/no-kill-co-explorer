@@ -144,45 +144,33 @@
                     transform={`translate(${xScale(tick) + xScale.bandwidth()/2}, 0)`}
                 >{tick}</text>
                 {#if metadata.nodesExist && lineData[dataCategory]}
-                {#if lineData[dataCategory][`y${tick}`] && lineData[dataCategory][`y${tick}`].length > 0}
-                <text class="font-bold"
-                    transform={`translate(${xScale(tick) + xScale.bandwidth()/2}, 20)`}
-                >{lineData[dataCategory][`y${tick}`][0].value}</text>
-                {/if}
-                {#each colorCategories as category, i}
-                {#if lineData[dataCategory][category] && lineData[dataCategory][category][`y${tick}`] && lineData[dataCategory][category][`y${tick}`].length > 0}
-                <text class="font-bold"
-                    fill={colors[i]}
-                    transform={`translate(${xScale(tick) + xScale.bandwidth()/2}, ${20 + (20 * i)})`}
-                >{lineData[dataCategory][category][`y${tick}`][0].value}</text>                    
-                {:else}
-                {#if lineData[dataCategory][category][statusLegendEntry[category]]}
-                    {#if lineData[dataCategory][category][statusLegendEntry[category]][`y${tick}`] &&
-                        lineData[dataCategory][category][statusLegendEntry[category]][`y${tick}`].length > 0
-                    }
-                        <text class="font-bold"
-                            fill={colors[i]}
-                            transform={`translate(${xScale(tick) + xScale.bandwidth()/2}, ${20 + (20 * i)})`}
-                        >{lineData[dataCategory][category][statusLegendEntry[category]][`y${tick}`][0].value}</text>                        
+                    {#if dataCategory === "starttotals" && lineData[dataCategory][`y${tick}`] && lineData[dataCategory][`y${tick}`].length > 0}
+                    <text class="font-bold"
+                        transform={`translate(${xScale(tick) + xScale.bandwidth()/2}, 20)`}
+                    >{lineData[dataCategory][`y${tick}`][0].value}</text>
                     {/if}
-                {/if}
+                {#if dataCategory !== "starttotals"}
+                {#each colorCategories as category, i}
+                    {#if dataCategory !== "starttotals" && lineData[dataCategory][category] && lineData[dataCategory][category][`y${tick}`] && lineData[dataCategory][category][`y${tick}`].length > 0}
+                    <text class="font-bold"
+                        fill={colors[i]}
+                        transform={`translate(${xScale(tick) + xScale.bandwidth()/2}, ${20 + (20 * i)})`}
+                    >{lineData[dataCategory][category][`y${tick}`][0].value}</text>                    
+                    {:else if lineData[dataCategory][category][statusLegendEntry[category]]}
+                        {#if lineData[dataCategory][category][statusLegendEntry[category]][`y${tick}`] &&
+                            lineData[dataCategory][category][statusLegendEntry[category]][`y${tick}`].length > 0
+                        }
+                            <text class="font-bold"
+                                fill={colors[i]}
+                                transform={`translate(${xScale(tick) + xScale.bandwidth()/2}, ${20 + (20 * i)})`}
+                            >{lineData[dataCategory][category][statusLegendEntry[category]][`y${tick}`][0].value}</text>                        
+                        {/if}
+                    {/if}
+                {/each}
                 {/if} 
-                {/each}
                 {/if}
                 {/each}
             </g>
-            {#if colorCategories && colors && xScale && yScale && hoverset && metadata.nodesExist}
-            <g transform={`translate(${margin.left},${margin.top})`}>
-                <Lines 
-                    {colorCategories}
-                    {colors}
-                    {xScale}
-                    {yScale}
-                    {years}
-                    {statusLegendEntry}
-                />
-            </g>
-            {/if}
             {#each years as year}
                 {#if dataCategory === "status" && colorCategories.length}
                     {@const subScale = scaleBand().domain(colorCategories).range([0, xScale.bandwidth()])}
@@ -284,6 +272,18 @@
                     {/each}
                 {/if}
             {/each}
+            {#if colorCategories && colors && xScale && yScale && hoverset && metadata.nodesExist}
+            <g transform={`translate(${margin.left},${margin.top})`}>
+                <Lines 
+                    {colorCategories}
+                    {colors}
+                    {xScale}
+                    {yScale}
+                    {years}
+                    {statusLegendEntry}
+                />
+            </g>
+            {/if}
         </svg>
     {/if}
 </div>
